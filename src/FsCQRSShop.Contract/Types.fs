@@ -35,3 +35,12 @@ type DsfPerson = {Navn: PersonNavn; Adresse: Adresse}
 
 let organisasjonsnummer = create (fun s -> s <> null && s.Length = 9) Organisasjonsnummer
 
+
+type CustomerId = CustomerId of Guid 
+type ProductId = ProductId of Guid 
+type BasketId = BasketId of Guid 
+type OrderId = OrderId of Guid 
+
+type Address = { Street: string }
+
+
