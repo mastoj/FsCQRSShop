@@ -9,7 +9,6 @@ open Types
 open Builder
 open Newtonsoft.Json
 open EventStore.DummyEventStore
-open Person
 open Commands
 open Events
 
@@ -26,10 +25,10 @@ module Test =
         let id = Guid.NewGuid()
         let personId = PersonId(id)
         let adresse = {Linjer = "hello"}
-        let c1 = PersonCommand(OpprettFraDsf(personId, fnr, "jansson"))
-        let c2 = PersonCommand(RegistrerAdresse(personId, adresse))
-        application c1
-        application c2
+//        let c1 = PersonCommand(OpprettFraDsf(personId, fnr, "jansson"))
+//        let c2 = PersonCommand(RegistrerAdresse(personId, adresse))
+//        application c1
+//        application c2
         
         let (version, events) = readFromStream es (toStreamId id)
 

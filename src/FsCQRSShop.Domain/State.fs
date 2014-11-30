@@ -4,9 +4,9 @@ open FsCQRSShop.Contract
 open Types
 open System
 
-type PersonState = {Id:PersonId; Adresse:Adresse option} 
-let initPerson = {Id = PersonId(Guid.Empty); Adresse = None}
+type CustomerState = {Id:CustomerId; Name:string; Discount:int} 
+let initCustomer = {Id = CustomerId(Guid.Empty); Name = ""; Discount = 0}
 
 type State =
     | Init
-    | Person of PersonState
+    | Customer of CustomerState

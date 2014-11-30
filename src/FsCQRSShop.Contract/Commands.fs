@@ -2,14 +2,10 @@
 open Types
 
 type Command = 
-    | PersonCommand of  PersonCommand
     | CustomerCommand of CustomerCommand
     | ProductCommand of ProductCommand
     | BasketCommand of BasketCommand
     | OrderCommand of OrderCommand
-and PersonCommand =
-    | OpprettFraDsf of PersonId:PersonId * Fødselsnummer:Fødselsnummer * Etternavn:string
-    | RegistrerAdresse of PersonId:PersonId * Adresse:Adresse
 and CustomerCommand = 
     | CreateCustomer of CustomerId:CustomerId * Name:string
     | MarkCustomerAsPreferred of CustomerId:CustomerId * Discount:int

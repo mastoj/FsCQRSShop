@@ -2,8 +2,16 @@
 
 open FsCQRSShop.Contract
 open Commands
-open Person
+open Customer
+open Basket
+open Order
+open Product
 
-let handle getPerson c state =
+//type Dependencies = {}
+
+let handle c state =
     match c with
-    | Command.PersonCommand(pc) -> handlePerson getPerson state pc
+    | Command.BasketCommand(bc) -> handleBasket state bc
+    | Command.CustomerCommand(cc) -> handleCustomer state cc
+    | Command.OrderCommand(oc) -> handleOrder state oc
+    | Command.ProductCommand(pc) -> handleProduct state pc

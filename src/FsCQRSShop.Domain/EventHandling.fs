@@ -1,13 +1,14 @@
 ﻿module FsCQRSShop.Domain.EventHandling
 open FsCQRSShop.Contract
-open Person
+open State
+open Customer
 open Commands
 
 let evolve command events = 
     let initialState = match command with
-                       | PersonCommand(_) -> State.Person(initPerson)
+                       | CustomerCommand(_) -> State.Customer(initCustomer)
     let evolveOne state event =
         match state with
-        | State.Person(p) -> evolvePerson p event
+        | State.Customer p -> evolveCustomer p event
         | _ -> state
     List.fold evolveOne initialState events
