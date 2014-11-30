@@ -5,14 +5,21 @@ open FsCQRSShop.Contract
 open Types
 open Commands
 open Events
-open State
 
-exception InvalidStateException
+open State
+open Exceptions
 
 let handleCustomer state pc =
+    let customerState = match state with
+                        | Customer cs -> cs
+                        | _ -> raise InvalidStateException
     match pc with
-    | CreateCustomer(id, name) -> [CustomerCreated(id, name)]
-    | MarkCustomerAsPreferred(id, discount) -> [CustomerMarkedAsPreferred(id, discount)]
+    | CreateCustomer(id, name) -> 
+        if customerState <> initCustomer then raise InvalidStateException
+        [CustomerCreated(id, name)]
+    | MarkCustomerAsPreferred(id, discount) -> 
+        if customerState = initCustomer then raise InvalidStateException
+        [CustomerMarkedAsPreferred(id, discount)]
 
 let evolveCustomer state event =
     match event with

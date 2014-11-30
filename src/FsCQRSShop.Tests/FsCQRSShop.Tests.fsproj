@@ -49,7 +49,10 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Specification.fs" />
     <Compile Include="When creating a customer.fs" />
+    <Compile Include="When making customer preferred.fs" />
+    <Compile Include="When creating a product.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
   </ItemGroup>
