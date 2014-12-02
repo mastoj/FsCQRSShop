@@ -10,6 +10,7 @@ let evolve command events =
     let initialState = match command with
                        | CustomerCommand(_) -> State.Customer(initCustomer)
                        | ProductCommand(_) -> State.Product(initProduct)
+                       | BasketCommand(_) -> State.Basket(initBasket)
     let evolveOne state event =
         match state with
         | State.Customer c -> evolveCustomer c event
