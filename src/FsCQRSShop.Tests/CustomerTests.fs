@@ -11,6 +11,7 @@ open Types
 open FsCQRSShop.Domain
 
 open FsCQRSShop.Tests.Specification
+open FsCQRSShop.Infrastructure.Railroad
 
 module ``When making customer preferred`` =
 
@@ -26,7 +27,7 @@ module ``When making customer preferred`` =
         let id = Guid.NewGuid()
         Given ([], None)
         |> When (Command.CustomerCommand(MarkCustomerAsPreferred(CustomerId id, 80)))
-        |> ExpectFail
+        |> ExpectFail (InvalidState "Customer")
 
 module ``When creating a customer`` =
 
@@ -42,4 +43,4 @@ module ``When creating a customer`` =
         let id = Guid.NewGuid()
         Given ([(id, [Event.CustomerCreated(CustomerId id, "john doe")])], None)
         |> When (Command.CustomerCommand(CreateCustomer(CustomerId id, "tomas jansson")))
-        |> ExpectFail
+        |> ExpectFail (InvalidState "Customer")

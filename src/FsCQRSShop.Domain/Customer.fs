@@ -23,10 +23,10 @@ let handleCustomer deps pc =
     match pc with
     | CreateCustomer(CustomerId id, name) -> 
         let (version, state) = getCustomerState deps id
-        if state <> initCustomer then Fail "Invalid state"
+        if state <> initCustomer then Fail (InvalidState "Customer")
         else Success (id, version, [CustomerCreated(CustomerId id, name)])
     | MarkCustomerAsPreferred(CustomerId id, discount) -> 
         let (version, state) = getCustomerState deps id
-        if state = initCustomer then Fail "Invalid  state"
+        if state = initCustomer then Fail (InvalidState "Customer")
         else Success (id, version, [CustomerMarkedAsPreferred(CustomerId id, discount)])
 

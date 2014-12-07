@@ -41,17 +41,12 @@ let Expect expectedEvents (events, dependencies, command) =
     |> (fun (Success (id, version, events)) -> events)
     |> should equal expectedEvents
 
-let ExpectFail (events, dependencies, command) =
+let ExpectFail failure (events, dependencies, command) =
     printfn "Given: %A" events
     printfn "When: %A" command
-    printfn "Throws: %A" typeof<'Ex>
+    printfn "Should fail with: %A" failure
 
-    command
-    |> (createTestApplication dependencies events)
-    |> (fun x -> match x with
-                    | Success _ -> true
-                    | Fail _ -> false)
-    |> should equal false
-
-//    (fun () -> command |> (createTestApplication dependencies events) |> ignore) 
-//    |> should throw typeof<'Ex>
+    command 
+    |> (createTestApplication dependencies events) 
+    |> (fun r -> r = Fail failure)
+    |> should equal true

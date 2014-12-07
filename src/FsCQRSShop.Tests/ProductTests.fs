@@ -11,6 +11,7 @@ open Types
 open FsCQRSShop.Domain
 
 open FsCQRSShop.Tests.Specification
+open FsCQRSShop.Infrastructure.Railroad
 
 module ``When creating a product`` = 
     [<Fact>]
@@ -25,5 +26,5 @@ module ``When creating a product`` =
         let id = Guid.NewGuid()
         Given ([(id, [ProductCreated(ProductId id, "Honey", 80)])], None)
         |> When (Command.ProductCommand(CreateProduct(ProductId id, "Honey", 80)))
-        |> ExpectFail
+        |> ExpectFail (InvalidState ("Product"))
 

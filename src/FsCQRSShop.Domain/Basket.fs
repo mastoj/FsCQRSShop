@@ -21,9 +21,9 @@ let handleBasket deps pc =
     match pc with
     | CreateBasket(BasketId id, CustomerId customerId) ->
         let (_, customerState) = getCustomerState deps customerId
-        if customerState = initCustomer then Fail "Invalid state"
+        if customerState = initCustomer then Fail (InvalidState "Customer")
         else
             let (version, state) = getState id
-            if state <> initBasket then Fail "Invalid state"
+            if state <> initBasket then Fail (InvalidState "Basket")
             else Success (id, version, [BasketCreated(BasketId id, CustomerId customerId, customerState.Discount)])
-    | _ -> Fail "Not support command"
+    | _ -> Fail (NotSupportedCommand (pc.GetType().Name))

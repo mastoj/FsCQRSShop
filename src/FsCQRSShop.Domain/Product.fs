@@ -20,5 +20,5 @@ let handleProduct deps pc =
     match pc with
     | CreateProduct(ProductId id, name, price) -> 
         let (version, state) = getState id
-        if state <> initProduct then Fail "Invalid state"
+        if state <> initProduct then Fail (InvalidState "Product")
         else Success (id, version, [ProductCreated(ProductId id, name, price)])

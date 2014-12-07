@@ -11,6 +11,7 @@ open Types
 open FsCQRSShop.Domain
 
 open FsCQRSShop.Tests.Specification
+open FsCQRSShop.Infrastructure.Railroad
 
 module ``When creating a basket`` = 
     [<Fact>]
@@ -28,7 +29,7 @@ module ``When creating a basket`` =
         let customerId = CustomerId (Guid.NewGuid())
         Given ([], None)
         |> When (Command.BasketCommand(CreateBasket(basketId, customerId)))
-        |> ExpectFail
+        |> ExpectFail (InvalidState "Customer")
 
     [<Fact>]
     let `` the customer should get its discount``() = 
