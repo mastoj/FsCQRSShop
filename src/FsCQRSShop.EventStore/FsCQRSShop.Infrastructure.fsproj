@@ -49,6 +49,8 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Railroad.fs" />
+    <Compile Include="ApplicationBuilder.fs" />
     <Compile Include="EventStore.fs" />
     <Content Include="packages.config" />
   </ItemGroup>

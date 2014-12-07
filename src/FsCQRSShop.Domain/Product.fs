@@ -6,7 +6,8 @@ open Events
 open Types
 
 open State
-open Exceptions
+
+open FsCQRSShop.Infrastructure.Railroad
 
 let evolveOneProduct state event = 
     match event with
@@ -15,9 +16,9 @@ let evolveOneProduct state event =
 let evolveProduct = evolve evolveOneProduct
 
 let handleProduct deps pc = 
-    let getState (ProductId id) = evolveProduct initProduct ((deps.readEvents id) |> (fun (_, e) -> e))
+    let getState id = evolveProduct initProduct ((deps.readEvents id) |> (fun (_, e) -> e))
     match pc with
-    | CreateProduct(id, name, price) -> 
-        let state = getState id
-        if state <> initProduct then raise InvalidStateException
-        [ProductCreated(id, name, price)]
+    | CreateProduct(ProductId id, name, price) -> 
+        let (version, state) = getState id
+        if state <> initProduct then Fail "Invalid state"
+        else Success (id, version, [ProductCreated(ProductId id, name, price)])

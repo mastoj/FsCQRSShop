@@ -9,7 +9,6 @@ open Commands
 open Types
 
 open FsCQRSShop.Domain
-open Exceptions
 
 open FsCQRSShop.Tests.Specification
 
@@ -27,7 +26,7 @@ module ``When making customer preferred`` =
         let id = Guid.NewGuid()
         Given ([], None)
         |> When (Command.CustomerCommand(MarkCustomerAsPreferred(CustomerId id, 80)))
-        |> ExpectThrows<InvalidStateException>
+        |> ExpectFail
 
 module ``When creating a customer`` =
 
@@ -43,4 +42,4 @@ module ``When creating a customer`` =
         let id = Guid.NewGuid()
         Given ([(id, [Event.CustomerCreated(CustomerId id, "john doe")])], None)
         |> When (Command.CustomerCommand(CreateCustomer(CustomerId id, "tomas jansson")))
-        |> ExpectThrows<InvalidStateException>
+        |> ExpectFail

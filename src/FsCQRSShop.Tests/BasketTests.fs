@@ -9,7 +9,6 @@ open Commands
 open Types
 
 open FsCQRSShop.Domain
-open Exceptions
 
 open FsCQRSShop.Tests.Specification
 
@@ -29,7 +28,7 @@ module ``When creating a basket`` =
         let customerId = CustomerId (Guid.NewGuid())
         Given ([], None)
         |> When (Command.BasketCommand(CreateBasket(basketId, customerId)))
-        |> ExpectThrows<InvalidStateException>
+        |> ExpectFail
 
     [<Fact>]
     let `` the customer should get its discount``() = 

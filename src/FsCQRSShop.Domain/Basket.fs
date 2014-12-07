@@ -3,12 +3,13 @@
 open System
 
 open State
-open Exceptions
 
 open FsCQRSShop.Contract
 open Commands
 open Events
 open Types
+
+open FsCQRSShop.Infrastructure.Railroad
 
 open Customer
 
@@ -16,12 +17,13 @@ let evolveOneBasket a b = {Id = BasketId(Guid.Empty)}
 let evolveBasket = evolve evolveOneBasket
 
 let handleBasket deps pc = 
-    let getState (BasketId id) = evolveBasket initBasket ((deps.readEvents id) |> (fun (_, e) -> e))
+    let getState id = evolveBasket initBasket ((deps.readEvents id) |> (fun (_, e) -> e))
     match pc with
-    | CreateBasket(id, customerId) ->
-        let customerState = getCustomerState deps customerId
-        if customerState = initCustomer then raise InvalidStateException
-        let state = getState id
-        if state <> initBasket then raise InvalidStateException
-        [BasketCreated(id, customerId, customerState.Discount)]
-    | _ -> raise (NotImplementedException(""))
+    | CreateBasket(BasketId id, CustomerId customerId) ->
+        let (_, customerState) = getCustomerState deps customerId
+        if customerState = initCustomer then Fail "Invalid state"
+        else
+            let (version, state) = getState id
+            if state <> initBasket then Fail "Invalid state"
+            else Success (id, version, [BasketCreated(BasketId id, CustomerId customerId, customerState.Discount)])
+    | _ -> Fail "Not support command"

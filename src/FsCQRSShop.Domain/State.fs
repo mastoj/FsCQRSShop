@@ -17,7 +17,7 @@ let initBasket = {Id = BasketId(Guid.Empty)}
 
 type Dependencies = {readEvents: Guid -> (int*Event list)}
 let evolve evolveOne initState events =
-    List.fold evolveOne initState events
+    List.fold (fun (v,s) e -> (v + 1, (evolveOne s e))) (0,initState) events
 
 type State =
     | Init
