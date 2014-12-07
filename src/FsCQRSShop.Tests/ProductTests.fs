@@ -24,7 +24,7 @@ module ``When creating a product`` =
     [<Fact>]
     let ``it should fail if id is not unique``() =
         let id = Guid.NewGuid()
-        Given ([ProductCreated(ProductId id, "Honey", 80)], None)
+        Given ([(id, [ProductCreated(ProductId id, "Honey", 80)])], None)
         |> When (Command.ProductCommand(CreateProduct(ProductId id, "Honey", 80)))
         |> ExpectThrows<InvalidStateException>
 

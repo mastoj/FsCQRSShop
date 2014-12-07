@@ -4,6 +4,8 @@ open FsCQRSShop.Contract
 open Types
 open System
 
+open Events
+
 type CustomerState = {Id:CustomerId; Name:string; Discount:int} 
 let initCustomer = {Id = CustomerId(Guid.Empty); Name = ""; Discount = 0}
 
@@ -12,6 +14,10 @@ let initProduct = {Id = ProductId(Guid.Empty); Name = ""; Price = 0}
 
 type BasketState = {Id:BasketId}
 let initBasket = {Id = BasketId(Guid.Empty)}
+
+type Dependencies = {readEvents: Guid -> (int*Event list)}
+let evolve evolveOne initState events =
+    List.fold evolveOne initState events
 
 type State =
     | Init

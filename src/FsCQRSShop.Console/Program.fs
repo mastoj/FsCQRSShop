@@ -19,7 +19,7 @@ module Test =
         let es = create()
         let appendStream = appendToStream es
         let readStream = readFromStream es
-        let application = createApplication readStream appendStream
+//        let application = createApplication readStream appendStream
 
         let fnr = fødselsnummer "08080812345" |> Option.get
         let id = Guid.NewGuid()

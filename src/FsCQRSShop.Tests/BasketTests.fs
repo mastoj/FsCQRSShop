@@ -16,9 +16,10 @@ open FsCQRSShop.Tests.Specification
 module ``When creating a basket`` = 
     [<Fact>]
     let ``it should succeed if the customer exists``() = 
+        let customerGuid = Guid.NewGuid()
         let basketId = BasketId (Guid.NewGuid())
-        let customerId = CustomerId (Guid.NewGuid())
-        Given ([CustomerCreated(customerId, "john doe")], None)
+        let customerId = CustomerId (customerGuid)
+        Given ([(customerGuid, [CustomerCreated(customerId, "john doe")])], None)
         |> When (Command.BasketCommand(CreateBasket(basketId, customerId)))
         |> Expect [BasketCreated(basketId, customerId, 0)]
 
@@ -32,9 +33,10 @@ module ``When creating a basket`` =
 
     [<Fact>]
     let `` the customer should get its discount``() = 
+        let customerGuid = Guid.NewGuid()
         let basketId = BasketId (Guid.NewGuid())
-        let customerId = CustomerId (Guid.NewGuid())
-        Given ([CustomerCreated(customerId, "john doe"); CustomerMarkedAsPreferred(customerId, 10)], None)
+        let customerId = CustomerId (customerGuid)
+        Given ([(customerGuid, [CustomerCreated(customerId, "john doe"); CustomerMarkedAsPreferred(customerId, 10)])], None)
         |> When (Command.BasketCommand(CreateBasket(basketId, customerId)))
         |> Expect [BasketCreated(basketId, customerId, 10)]
 

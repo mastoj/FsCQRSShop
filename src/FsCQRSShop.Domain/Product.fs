@@ -8,15 +8,16 @@ open Types
 open State
 open Exceptions
 
-let handleProduct state pc = 
-    let productState = match state with
-                        | Product ps -> ps
-                        | _ -> raise InvalidStateException
+let evolveOneProduct state event = 
+    match event with
+    | ProductCreated(id, name, price) -> {Id = id; Name = name; Price = price}
+
+let evolveProduct = evolve evolveOneProduct
+
+let handleProduct deps pc = 
+    let getState (ProductId id) = evolveProduct initProduct ((deps.readEvents id) |> (fun (_, e) -> e))
     match pc with
     | CreateProduct(id, name, price) -> 
-        if productState <> initProduct then raise InvalidStateException
+        let state = getState id
+        if state <> initProduct then raise InvalidStateException
         [ProductCreated(id, name, price)]
-
-let evolveProduct state event =
-    match event with
-    | ProductCreated(id, name, price) -> State.Product({Id = id; Name = name; Price = price})

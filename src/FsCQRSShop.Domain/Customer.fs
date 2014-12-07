@@ -9,19 +9,31 @@ open Events
 open State
 open Exceptions
 
-let handleCustomer state pc =
-    let customerState = match state with
-                        | Customer cs -> cs
-                        | _ -> raise InvalidStateException
+//let evolve initState events =
+//    let evolveOne state event =
+//        match state with
+//        | State.Customer c -> evolveCustomer c event
+//        | State.Product p -> evolveProduct p event
+//        | _ -> state
+//    List.fold evolveOne initState events
+
+let evolveOneCustomer state event =
+    match event with
+    | CustomerCreated(id, name) -> {Id = id; Name = name; Discount = 0}
+    | CustomerMarkedAsPreferred(id, discount) -> {state with Discount = discount}
+
+let evolveCustomer = evolve evolveOneCustomer
+
+let getCustomerState deps (CustomerId id) = evolveCustomer initCustomer ((deps.readEvents id) |> (fun (_, e) -> e))
+
+let handleCustomer deps pc =
     match pc with
     | CreateCustomer(id, name) -> 
-        if customerState <> initCustomer then raise InvalidStateException
+        let state = getCustomerState deps id
+        if state <> initCustomer then raise InvalidStateException
         [CustomerCreated(id, name)]
     | MarkCustomerAsPreferred(id, discount) -> 
-        if customerState = initCustomer then raise InvalidStateException
+        let state = getCustomerState deps id
+        if state = initCustomer then raise InvalidStateException
         [CustomerMarkedAsPreferred(id, discount)]
 
-let evolveCustomer state event =
-    match event with
-    | CustomerCreated(id, name) -> State.Customer({Id = id; Name = name; Discount = 0} )
-    | CustomerMarkedAsPreferred(id, discount) -> Customer({state with Discount = discount})
