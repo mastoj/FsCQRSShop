@@ -8,4 +8,8 @@ let bind switchFunction =
                     | Success s -> switchFunction s
                     | Fail s -> Fail s
 
-let buildApplication save handler = handler >> (bind save)//    (fun c -> handler c |> bind save)
+
+let (>>=) input switchFunction = bind switchFunction input
+
+let buildApplication save handler c = 
+    (handler c) >>= save //    (fun c -> handler c |> bind save)
