@@ -11,7 +11,7 @@ open Types
 open FsCQRSShop.Domain
 
 open FsCQRSShop.Tests.Specification
-open FsCQRSShop.Infrastructure.Railroad
+open FsCQRSShop.Domain.Railway
 
 module ``When making customer preferred`` =
 

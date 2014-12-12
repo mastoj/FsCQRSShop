@@ -1,5 +1,6 @@
-﻿module FsCQRSShop.Domain.Order
+﻿namespace FsCQRSShop.Domain
 open System
-open FsCQRSShop.Infrastructure.Railroad
+open Railway
 
-let handleOrder state pc = Fail (NotSupportedCommand (pc.GetType().Name))
+module Order =
+    let handleOrder state pc = Failure (NotSupportedCommand (pc.GetType().Name))

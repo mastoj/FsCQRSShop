@@ -42,6 +42,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Railway.fs" />
     <Compile Include="State.fs" />
     <Compile Include="EventHandling.fs" />
     <Compile Include="Customer.fs" />
@@ -49,16 +50,12 @@
     <Compile Include="Product.fs" />
     <Compile Include="Order.fs" />
     <Compile Include="CommandHandling.fs" />
+    <Compile Include="ApplicationBuilder.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FsCQRSShop.Contract\FsCQRSShop.Contract.fsproj">
       <Name>FsCQRSShop.Contract</Name>
       <Project>{7ecf1bc0-3351-428a-af81-ae09f3cc9f6b}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\FsCQRSShop.EventStore\FsCQRSShop.Infrastructure.fsproj">
-      <Name>FsCQRSShop.Infrastructure</Name>
-      <Project>{b56a2384-57f0-4e38-8a7c-63e583d12817}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

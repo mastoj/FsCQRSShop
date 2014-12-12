@@ -1,5 +1,4 @@
-﻿module FsCQRSShop.Domain.Customer
-
+﻿namespace FsCQRSShop.Domain
 open System
 open FsCQRSShop.Contract
 open Types
@@ -7,26 +6,59 @@ open Commands
 open Events
 
 open State
+open Railway
 
-open FsCQRSShop.Infrastructure.Railroad
+module Customer =
+    type CustomerInfo = {Id:CustomerId; Name:string} 
 
-let evolveOneCustomer state event =
-    match event with
-    | CustomerCreated(id, name) -> {Id = id; Name = name; Discount = 0}
-    | CustomerMarkedAsPreferred(id, discount) -> {state with Discount = discount}
+    type Customer = 
+        | Init
+        | Created of CustomerInfo
+        | Preferred of CustomerInfo * Discount:int
 
-let evolveCustomer = evolve evolveOneCustomer
+    let invalidCustomerState = Failure (InvalidState "Customer")
+    
+    let getDiscount c = 
+        match c with
+        | Preferred (_, d) -> Success d
+        | Created _ -> Success 0
+        | Init -> invalidCustomerState
 
-let getCustomerState deps id = evolveCustomer initCustomer ((deps.readEvents id) |> (fun (_, e) -> e))
+    let getCustomerId c =
+        match c with
+        | Preferred (info, _) -> Success info.Id
+        | Created info -> Success info.Id
+        | Init -> invalidCustomerState
 
-let handleCustomer deps pc =
-    match pc with
-    | CreateCustomer(CustomerId id, name) -> 
-        let (version, state) = getCustomerState deps id
-        if state <> initCustomer then Fail (InvalidState "Customer")
-        else Success (id, version, [CustomerCreated(CustomerId id, name)])
-    | MarkCustomerAsPreferred(CustomerId id, discount) -> 
-        let (version, state) = getCustomerState deps id
-        if state = initCustomer then Fail (InvalidState "Customer")
-        else Success (id, version, [CustomerMarkedAsPreferred(CustomerId id, discount)])
+    let evolveOneCustomer state event =
+        match state with
+        | Init -> match event with
+                  | CustomerCreated(id, name) -> Success ( Created{Id = id; Name = name})
+                  | _ -> stateTransitionFail event state
+        | Created info -> match event with
+                          | CustomerMarkedAsPreferred(id, discount) -> Success (Preferred(info,discount))
+                          | _ -> stateTransitionFail event state
+        | Preferred (info, _) -> match event with
+                                 | CustomerMarkedAsPreferred(id, discount) -> Success (Preferred(info,discount))
+                                 | _ -> stateTransitionFail event state
+
+    let evolveCustomer = evolve evolveOneCustomer
+
+    let getCustomerState deps id = evolveCustomer Init ((deps.readEvents id) |> (fun (_, e) -> e))
+
+    let handleCustomer deps pc =
+        let createCustomer id name (version, state) =
+            match state with
+            | Init -> Success (id, version, [CustomerCreated(CustomerId id, name)])
+            | _ -> Failure (InvalidState "Customer")
+        let markAsPreferred id discount (version, state) = 
+            match state with
+            | Init -> Failure (InvalidState "Customer")
+            | _ -> Success (id, version, [CustomerMarkedAsPreferred(CustomerId id, discount)])
+
+        match pc with
+        | CreateCustomer(CustomerId id, name) -> 
+            getCustomerState deps id >>= (createCustomer id name)
+        | MarkCustomerAsPreferred(CustomerId id, discount) -> 
+            getCustomerState deps id >>= (markAsPreferred id discount)
 

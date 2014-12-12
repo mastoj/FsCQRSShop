@@ -1,4 +1,4 @@
-﻿module FsCQRSShop.Domain.CommandHandling
+﻿namespace FsCQRSShop.Domain
 open System
 open FsCQRSShop.Contract
 open Commands
@@ -8,12 +8,12 @@ open Basket
 open Order
 open Product
 open State
-
 open FsCQRSShop.Domain.EventHandling
 
-let handle deps c =
-    match c with
-    | Command.BasketCommand(bc) -> handleBasket deps bc
-    | Command.CustomerCommand(cc) -> handleCustomer deps cc
-    | Command.OrderCommand(oc) -> handleOrder deps oc
-    | Command.ProductCommand(pc) -> handleProduct deps pc
+module CommandHandling =
+    let handle deps c =
+        match c with
+        | Command.CustomerCommand(cc) -> handleCustomer deps cc
+        | Command.BasketCommand(bc) -> handleBasket deps bc
+        | Command.OrderCommand(oc) -> handleOrder deps oc
+        | Command.ProductCommand(pc) -> handleProduct deps pc

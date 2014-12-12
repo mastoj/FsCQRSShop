@@ -1,29 +1,38 @@
-﻿module FsCQRSShop.Domain.Basket
-
+﻿namespace FsCQRSShop.Domain
 open System
-
-open State
 
 open FsCQRSShop.Contract
 open Commands
 open Events
 open Types
 
-open FsCQRSShop.Infrastructure.Railroad
-
+open Railway
 open Customer
+open State
 
-let evolveOneBasket a b = {Id = BasketId(Guid.Empty)}
-let evolveBasket = evolve evolveOneBasket
+module Basket =
+    type Basket = 
+    | Init
+    | Created of BasketId
 
-let handleBasket deps pc = 
-    let getState id = evolveBasket initBasket ((deps.readEvents id) |> (fun (_, e) -> e))
-    match pc with
-    | CreateBasket(BasketId id, CustomerId customerId) ->
-        let (_, customerState) = getCustomerState deps customerId
-        if customerState = initCustomer then Fail (InvalidState "Customer")
-        else
-            let (version, state) = getState id
-            if state <> initBasket then Fail (InvalidState "Basket")
-            else Success (id, version, [BasketCreated(BasketId id, CustomerId customerId, customerState.Discount)])
-    | _ -> Fail (NotSupportedCommand (pc.GetType().Name))
+    let evolveOneBasket state event = 
+        Success (Created (BasketId(Guid.Empty)))
+    let evolveBasket = evolve evolveOneBasket
+
+    let handleBasket deps pc = 
+        let getState id = evolveBasket Init ((deps.readEvents id) |> (fun (_, e) -> e))
+
+        let createBasket id customerId discountResult (version,state) = 
+            match state, discountResult with
+            | Init, (Success discount) -> Success (id, version, [BasketCreated(BasketId id, customerId, discount)])
+            | _, Failure f -> Failure f
+            | _, _ -> Failure (InvalidState "Basket")
+
+        match pc with
+        | CreateBasket(BasketId id, CustomerId customerId) ->
+            let discountResult = getCustomerState deps customerId
+                                 >>= (fun (v, c) -> Success c)
+                                 >>= getDiscount
+            getState id
+            >>= createBasket id (CustomerId customerId) discountResult
+        | _ -> Failure (NotSupportedCommand (pc.GetType().Name))

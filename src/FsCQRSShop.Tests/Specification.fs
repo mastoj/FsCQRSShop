@@ -3,21 +3,13 @@ open System
 open Xunit
 open FsUnit.Xunit
 
-open FsCQRSShop.Contract
-open Events
-open Commands
-open Types
-
 open FsCQRSShop.Domain
-open EventHandling
 open CommandHandling
 open State
 
+open FsCQRSShop.Domain.ApplicationBuilder
+open FsCQRSShop.Domain.Railway
 open FsCQRSShop.Infrastructure.EventStore.DummyEventStore
-open FsCQRSShop.Infrastructure.ApplicationBuilder
-open FsCQRSShop.Infrastructure.Railroad
-
-type TestSpec = {PreCondition: ((Guid*Event list) list * Dependencies option); Action: Command; PostCondition: Event list}
 
 let createTestApplication dependencies events = 
     let es = create()
@@ -32,6 +24,7 @@ let createTestApplication dependencies events =
 
 let Given (events, dependencies) = events, dependencies
 let When command (events, dependencies) = events, dependencies, command
+
 let Expect expectedEvents (events, dependencies, command) = 
     printfn "Given: %A" events
     printfn "When: %A" command
@@ -48,5 +41,5 @@ let ExpectFail failure (events, dependencies, command) =
 
     command 
     |> (createTestApplication dependencies events) 
-    |> (fun r -> r = Fail failure)
+    |> (fun r -> r = Failure failure)
     |> should equal true

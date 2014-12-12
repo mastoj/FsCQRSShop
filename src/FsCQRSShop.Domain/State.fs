@@ -1,26 +1,23 @@
-﻿module State
-
+﻿namespace FsCQRSShop.Domain
 open FsCQRSShop.Contract
 open Types
 open System
-
 open Events
+open Railway
 
-type CustomerState = {Id:CustomerId; Name:string; Discount:int} 
-let initCustomer = {Id = CustomerId(Guid.Empty); Name = ""; Discount = 0}
+module State =
 
-type ProductState = {Id:ProductId; Name:string; Price: int}
-let initProduct = {Id = ProductId(Guid.Empty); Name = ""; Price = 0}
+    type ProductState = {Id:ProductId; Name:string; Price: int}
+    let initProduct = {Id = ProductId(Guid.Empty); Name = ""; Price = 0}
 
-type BasketState = {Id:BasketId}
-let initBasket = {Id = BasketId(Guid.Empty)}
+    type Dependencies = {readEvents: Guid -> (int*Event list)}
+    let evolve evolveOne initState events =
+        List.fold (fun result e -> match result with
+                                   | Failure f -> Failure f
+                                   | Success (v,s) -> match (evolveOne s e) with
+                                                      | Success s -> Success (v+1, s) 
+                                                      | Failure f -> Failure f) 
+                  (Success (0, initState)) events
 
-type Dependencies = {readEvents: Guid -> (int*Event list)}
-let evolve evolveOne initState events =
-    List.fold (fun (v,s) e -> (v + 1, (evolveOne s e))) (0,initState) events
-
-type State =
-    | Init
-    | Customer of CustomerState
-    | Product of ProductState
-    | Basket of BasketState
+    let getTypeName o = o.GetType().Name
+    let stateTransitionFail event state = Failure (InvalidStateTransition (sprintf "Invalid event %s for state %s" (event |> getTypeName) (state |> getTypeName)))

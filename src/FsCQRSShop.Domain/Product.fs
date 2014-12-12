@@ -1,24 +1,34 @@
-﻿module FsCQRSShop.Domain.Product
-
+﻿namespace FsCQRSShop.Domain
 open FsCQRSShop.Contract
 open Commands
 open Events
 open Types
 
 open State
+open Railway
 
-open FsCQRSShop.Infrastructure.Railroad
 
-let evolveOneProduct state event = 
-    match event with
-    | ProductCreated(id, name, price) -> {Id = id; Name = name; Price = price}
+module Product =
+    type ProductInfo = {Id: ProductId; Name: string; Price: int}
+    type Product = 
+    | Init
+    | Created of ProductInfo
 
-let evolveProduct = evolve evolveOneProduct
+    let evolveOneProduct state event = 
+        match state with
+        | Init -> match event with
+                  | ProductCreated(id, name, price) -> Success (Created {Id = id; Name = name; Price = price})
+                  | _ -> stateTransitionFail state event
+        | _ -> stateTransitionFail state event
 
-let handleProduct deps pc = 
-    let getState id = evolveProduct initProduct ((deps.readEvents id) |> (fun (_, e) -> e))
-    match pc with
-    | CreateProduct(ProductId id, name, price) -> 
-        let (version, state) = getState id
-        if state <> initProduct then Fail (InvalidState "Product")
-        else Success (id, version, [ProductCreated(ProductId id, name, price)])
+    let evolveProduct = evolve evolveOneProduct
+
+    let handleProduct deps pc = 
+        let getState id = evolveProduct Init ((deps.readEvents id) |> (fun (_, e) -> e))
+        let createProduct id name price (version,state) = 
+            match state with 
+            | Init -> Success (id, version, [ProductCreated(ProductId id, name, price)])
+            | _ -> Failure (InvalidState "Product")
+        match pc with
+        | CreateProduct(ProductId id, name, price) -> 
+            getState id >>= createProduct id name price
