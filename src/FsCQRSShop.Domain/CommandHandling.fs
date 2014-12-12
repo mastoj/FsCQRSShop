@@ -7,7 +7,7 @@ open Customer
 open Basket
 open Order
 open Product
-open State
+open Helpers
 open FsCQRSShop.Domain.EventHandling
 
 module CommandHandling =

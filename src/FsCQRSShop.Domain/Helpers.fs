@@ -5,11 +5,7 @@ open System
 open Events
 open Railway
 
-module State =
-
-    type ProductState = {Id:ProductId; Name:string; Price: int}
-    let initProduct = {Id = ProductId(Guid.Empty); Name = ""; Price = 0}
-
+module Helpers =
     type Dependencies = {readEvents: Guid -> (int*Event list)}
     let evolve evolveOne initState events =
         List.fold (fun result e -> match result with

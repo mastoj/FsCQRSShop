@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Railway.fs" />
-    <Compile Include="State.fs" />
+    <Compile Include="Helpers.fs" />
     <Compile Include="EventHandling.fs" />
     <Compile Include="Customer.fs" />
     <Compile Include="Basket.fs" />

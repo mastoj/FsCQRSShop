@@ -5,7 +5,7 @@ open FsUnit.Xunit
 
 open FsCQRSShop.Domain
 open CommandHandling
-open State
+open Helpers
 
 open FsCQRSShop.Domain.ApplicationBuilder
 open FsCQRSShop.Domain.Railway
