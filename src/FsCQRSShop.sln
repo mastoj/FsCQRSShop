@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22310.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Tests", "FsCQRSShop.Tests\FsCQRSShop.Tests.fsproj", "{EE99B2BA-6C78-4CFB-A043-D84BD7C50ABA}"
 EndProject
@@ -9,9 +9,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Contract", "FsCQ
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Domain", "FsCQRSShop.Domain\FsCQRSShop.Domain.fsproj", "{4A6B3ED7-A869-4DE7-9013-60E5518DA3F1}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Infrastructure", "FsCQRSShop.EventStore\FsCQRSShop.Infrastructure.fsproj", "{B56A2384-57F0-4E38-8A7C-63E583D12817}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Application", "FsCQRSShop.Application\FsCQRSShop.Application.fsproj", "{955E6B47-91C1-40A0-80DA-5317D79720BF}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.EventStore", "FsCQRSShop.EventStore\FsCQRSShop.EventStore.fsproj", "{B56A2384-57F0-4E38-8A7C-63E583D12817}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Console", "FsCQRSShop.Console\FsCQRSShop.Console.fsproj", "{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}"
 EndProject
@@ -37,10 +35,6 @@ Global
 		{B56A2384-57F0-4E38-8A7C-63E583D12817}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B56A2384-57F0-4E38-8A7C-63E583D12817}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B56A2384-57F0-4E38-8A7C-63E583D12817}.Release|Any CPU.Build.0 = Release|Any CPU
-		{955E6B47-91C1-40A0-80DA-5317D79720BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{955E6B47-91C1-40A0-80DA-5317D79720BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{955E6B47-91C1-40A0-80DA-5317D79720BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{955E6B47-91C1-40A0-80DA-5317D79720BF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}.Release|Any CPU.ActiveCfg = Release|Any CPU

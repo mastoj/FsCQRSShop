@@ -7,7 +7,7 @@ open FsCQRSShop.Domain
 open CommandHandling
 open Helpers
 
-open FsCQRSShop.Domain.ApplicationBuilder
+open FsCQRSShop.Domain.DomainBuilder
 open FsCQRSShop.Domain.Railway
 open FsCQRSShop.Infrastructure.EventStore.DummyEventStore
 
@@ -19,8 +19,7 @@ let createTestApplication dependencies events =
     let deps = {readEvents = readStream}
 
     let save res = Success res
-    let handler = handle deps
-    buildApplication save handler
+    buildDomainEntry save deps
 
 let Given (events, dependencies) = events, dependencies
 let When command (events, dependencies) = events, dependencies, command

@@ -1,4 +1,9 @@
 ﻿namespace FsCQRSShop.Domain
+open System
+open FsCQRSShop.Contract.Events
+
+
+type Dependencies = {readEvents: Guid -> (int*Event list)}
 
 module Railway = 
     type Error = 

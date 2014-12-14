@@ -4,33 +4,35 @@ open System
 open FsCQRSShop.Contract
 open FsCQRSShop.Infrastructure
 open FsCQRSShop.Domain
-open FsCQRSShop.Application
 open Types
-open Builder
 open Newtonsoft.Json
-open EventStore.DummyEventStore
+open EventStore.EventStore
 open Commands
 open Events
+open Railway
 
 
 module Test = 
+    open CommandHandling
+    open DomainBuilder
 
+    let toStreamId (id:Guid) = sprintf "Test-%O" id
     let doStuff = 
-        let es = create()
+        let es = connect()
         let appendStream = appendToStream es
-        let readStream = readFromStream es
-//        let application = createApplication readStream appendStream
+        let readStream id = readFromStream es (toStreamId id)
+        let save (id, version, events) = 
+            appendStream (toStreamId id) version events |> ignore
+            Success events
+        let deps = {readEvents = readStream}
+        let handle = buildDomainEntry save deps
 
-        let fnr = fødselsnummer "08080812345" |> Option.get
         let id = Guid.NewGuid()
-        let personId = PersonId(id)
-        let adresse = {Linjer = "hello"}
-//        let c1 = PersonCommand(OpprettFraDsf(personId, fnr, "jansson"))
-//        let c2 = PersonCommand(RegistrerAdresse(personId, adresse))
-//        application c1
-//        application c2
-        
-        let (version, events) = readFromStream es (toStreamId id)
+        let command = Command.CustomerCommand(CreateCustomer(CustomerId(id), "Tomas Jansson"))
+        let command2 = Command.CustomerCommand(MarkCustomerAsPreferred(CustomerId(id), 80))
+        let saveEvents = handle command
+        let saveEvents = handle command2
+        let (version, events) = readStream id
 
         let serialized = JsonConvert.SerializeObject(events)
         printfn "serialized: %s" serialized
@@ -38,11 +40,6 @@ module Test =
         let deserialized = JsonConvert.DeserializeObject<Event list>(serialized)
         printfn "deserialized: %A" deserialized
         printfn "deserialized: %O" deserialized
-
-        let es = create()
-        appendToStream es "test" -1 events
-        let (version, readEvents) = readFromStream es "test"
-        printf "Read: %A, Version: %d" readEvents version
 
 open Test
 [<EntryPoint>]

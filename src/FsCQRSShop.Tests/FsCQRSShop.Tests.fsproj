@@ -92,8 +92,8 @@
       <Project>{4a6b3ed7-a869-4de7-9013-60e5518da3f1}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\FsCQRSShop.EventStore\FsCQRSShop.Infrastructure.fsproj">
-      <Name>FsCQRSShop.Infrastructure</Name>
+    <ProjectReference Include="..\FsCQRSShop.EventStore\FsCQRSShop.EventStore.fsproj">
+      <Name>FsCQRSShop.EventStore</Name>
       <Project>{b56a2384-57f0-4e38-8a7c-63e583d12817}</Project>
       <Private>True</Private>
     </ProjectReference>
