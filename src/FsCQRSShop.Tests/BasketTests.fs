@@ -32,6 +32,17 @@ module ``When creating a basket`` =
         |> ExpectFail (InvalidState "Customer")
 
     [<Fact>]
+    let ``it should fail if basket id is not unique``() = 
+        let customerGuid = Guid.NewGuid()
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId (basketGuid)
+        let customerId = CustomerId (customerGuid)
+        Given ([(customerGuid, [CustomerCreated(customerId, "john doe")]); 
+                (basketGuid, [BasketCreated(basketId, customerId, 0)])], None)
+        |> When (Command.BasketCommand(CreateBasket(basketId, customerId)))
+        |> ExpectFail (InvalidState "Basket")
+
+    [<Fact>]
     let `` the customer should get its discount``() = 
         let customerGuid = Guid.NewGuid()
         let basketId = BasketId (Guid.NewGuid())

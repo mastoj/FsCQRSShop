@@ -27,4 +27,3 @@ module ``When creating a product`` =
         Given ([(id, [ProductCreated(ProductId id, "Honey", 80)])], None)
         |> When (Command.ProductCommand(CreateProduct(ProductId id, "Honey", 80)))
         |> ExpectFail (InvalidState ("Product"))
-
