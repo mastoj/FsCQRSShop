@@ -3,7 +3,7 @@ open System
 open FsCQRSShop.Contract.Events
 
 
-type Dependencies = {readEvents: Guid -> (int*Event list)}
+type Dependencies = {readEvents: Guid -> (int*Event list); guidGenerator: unit -> Guid}
 
 module Railway = 
     type Error = 

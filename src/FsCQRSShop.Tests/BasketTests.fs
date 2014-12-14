@@ -103,3 +103,26 @@ module ``When checking out a basket`` =
         Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), 0)])], None)
         |> When (Command.BasketCommand(CheckoutBasket(basketId, {Street = address})))
         |> Expect [BasketCheckedOut(basketId, {Street = address.Trim()})]
+
+module ``When proceeding to checkout`` =
+    [<Fact>]
+    let ``the basket should be marked as checking out``() =
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId basketGuid
+        Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), 0)])], None)
+        |> When (Command.BasketCommand(ProceedToCheckout(basketId)))
+        |> Expect [CustomerIsCheckoutOutBasket(basketId)]
+
+module ``When making a payment`` = 
+    [<Fact>]
+    let ``the payment should succeed if the paid amount is the same as the expected``() =
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId basketGuid
+        let orderGuid = Guid.NewGuid()
+        let orderId = OrderId orderGuid
+        let orderLine = {ProductId = ProductId(Guid.NewGuid()); ProductName = "Ball"; OriginalPrice = 100; DiscountedPrice = 100; Quantity = 10}
+
+        Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), 0); ItemAdded(basketId, orderLine)])], 
+              Some {defaultDependencies with guidGenerator = (fun() -> orderGuid)})
+        |> When (Command.BasketCommand(MakePayment(basketId, 1000)))
+        |> Expect [OrderCreated(orderId, basketId, [orderLine])]

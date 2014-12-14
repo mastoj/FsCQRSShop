@@ -11,12 +11,16 @@ open FsCQRSShop.Domain.DomainBuilder
 open FsCQRSShop.Domain.Railway
 open FsCQRSShop.Infrastructure.EventStore.DummyEventStore
 
+let defaultDependencies = {readEvents = (fun id -> 0,[]); guidGenerator = Guid.NewGuid}
+
 let createTestApplication dependencies events = 
         let es = create()
         let toStreamId (id:Guid) = sprintf "%O" id
         let readStream id = readFromStream es (toStreamId id)
         events |> List.map (fun (id, evts) -> appendToStream es (toStreamId id) -1 evts) |> ignore
-        let deps = {readEvents = readStream}
+        let deps = match dependencies with
+                   | None -> { defaultDependencies with readEvents = readStream}
+                   | Some d -> { d with readEvents = readStream }
 
         let save res = Success res
         buildDomainEntry save deps

@@ -29,6 +29,6 @@ module WebStart =
         let save (id, version, events) = 
             appendStream (toStreamId id) version events |> ignore
             Success events
-        let deps = {readEvents = readStream}
+        let deps = {readEvents = readStream; guidGenerator = Guid.NewGuid}
 
         dto |> toCommand >>= (buildDomainEntry save deps) |> (matchToResult controller)

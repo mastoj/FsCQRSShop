@@ -13,11 +13,13 @@ module Basket =
     type BasketInfo = {Id: BasketId; Discount: int}
     type Basket = 
     | Init
-    | Created of BasketInfo
+    | Created of BasketInfo * OrderLine list
 
     let evolveOneBasket state event = 
         match event with
-        | BasketCreated(basketId, customerId, discount) -> Success (Created {Id = basketId; Discount = discount})
+        | BasketCreated(basketId, customerId, discount) -> Success (Created ({Id = basketId; Discount = discount},[]))
+        | ItemAdded(basketId, orderLine) -> match state with
+                                            | Created (info, lines) -> Success (Created(info, orderLine::lines))
     let evolveBasket = evolve evolveOneBasket
 
     let handleBasket deps pc = 
@@ -36,7 +38,7 @@ module Basket =
         let addItem basketId productId quantity (version,state) = 
             match state with
             | Init -> Failure (InvalidState "Basket")
-            | Created bi -> 
+            | Created (bi,_) -> 
                 getProduct deps productId
                 >>= (fun (_, product) -> match product with
                                          | Product.Created p -> 
@@ -47,7 +49,14 @@ module Basket =
         let checkout id address (version, basket) =
             match basket with
             | Init -> Failure (InvalidState "Basket")
-            | Created b -> Success (id, version, [BasketCheckedOut(b.Id, address)])
+            | Created (b,_) -> Success (id, version, [BasketCheckedOut(b.Id, address)])
+
+        let makePayment id payment (version, basket) =
+            match basket with
+            | Created(b,lines) -> 
+                let orderGuid = deps.guidGenerator()
+                let orderId = OrderId orderGuid
+                Success (orderGuid, -1, [OrderCreated(orderId, b.Id, lines)])
 
         match pc with
         | CreateBasket(BasketId id, CustomerId customerId) ->
@@ -61,5 +70,8 @@ module Basket =
             >>= addItem basketId productId quantity
         | CheckoutBasket(BasketId id, address) ->
             getState id >>= checkout id address
-
+        | ProceedToCheckout(BasketId id) ->
+            getState id >>= (fun (v,s) -> Success (id, v, [CustomerIsCheckoutOutBasket(BasketId id)]))
+        | MakePayment(BasketId id, payment) ->
+            getState id >>= makePayment id payment
         | _ -> Failure (NotSupportedCommand (pc.GetType().Name))
