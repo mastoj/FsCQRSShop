@@ -43,7 +43,7 @@ module ``When creating a basket`` =
         |> ExpectFail (InvalidState "Basket")
 
     [<Fact>]
-    let `` the customer should get its discount``() = 
+    let ``the customer should get its discount``() = 
         let customerGuid = Guid.NewGuid()
         let basketId = BasketId (Guid.NewGuid())
         let customerId = CustomerId (customerGuid)
@@ -51,3 +51,36 @@ module ``When creating a basket`` =
         |> When (Command.BasketCommand(CreateBasket(basketId, customerId)))
         |> Expect [BasketCreated(basketId, customerId, 10)]
 
+module ``When adding an item to the basket`` = 
+    [<Fact>]
+    let ``a regular customer shouldn't get any discount``() =
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId(basketGuid)
+        let productGuid = Guid.NewGuid()
+        let productId = ProductId(productGuid)
+        let productName = "ball"
+        let productPrice = 100
+        let quantity = 10
+        let orderLine = {ProductId = productId; ProductName = productName; OriginalPrice = productPrice; DiscountedPrice = productPrice; Quantity = quantity}
+        Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), 0)]);
+               (productGuid, [ProductCreated(productId, productName, productPrice)])], None)
+        |> When (Command.BasketCommand(AddItemToBasket(basketId, productId, quantity)))
+        |> Expect [ItemAdded(basketId, orderLine)]
+
+    [<Fact>]
+    let ``a preferred customer should get its discount``() =
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId(basketGuid)
+        let productGuid = Guid.NewGuid()
+        let productId = ProductId(productGuid)
+        let productName = "ball"
+        let productPrice = 100
+        let quantity = 10
+        let discountPercentage = 40
+        let orderLine = {ProductId = productId; ProductName = productName; 
+                         OriginalPrice = productPrice; DiscountedPrice = productPrice - (productPrice * discountPercentage)/100; 
+                         Quantity = quantity}
+        Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), discountPercentage)]);
+               (productGuid, [ProductCreated(productId, productName, productPrice)])], None)
+        |> When (Command.BasketCommand(AddItemToBasket(basketId, productId, quantity)))
+        |> Expect [ItemAdded(basketId, orderLine)]

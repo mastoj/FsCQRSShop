@@ -45,8 +45,8 @@
     <Compile Include="Railway.fs" />
     <Compile Include="Helpers.fs" />
     <Compile Include="Customer.fs" />
-    <Compile Include="Basket.fs" />
     <Compile Include="Product.fs" />
+    <Compile Include="Basket.fs" />
     <Compile Include="Order.fs" />
     <Compile Include="CommandHandling.fs" />
     <Compile Include="DomainBuilder.fs" />

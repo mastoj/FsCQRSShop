@@ -22,13 +22,13 @@ module Product =
         | _ -> stateTransitionFail state event
 
     let evolveProduct = evolve evolveOneProduct
+    let getProduct deps id = evolveProduct Init ((deps.readEvents id) |> (fun (_, e) -> e))
 
     let handleProduct deps pc = 
-        let getState id = evolveProduct Init ((deps.readEvents id) |> (fun (_, e) -> e))
         let createProduct id name price (version,state) = 
             match state with 
             | Init -> Success (id, version, [ProductCreated(ProductId id, name, price)])
             | _ -> Failure (InvalidState "Product")
         match pc with
         | CreateProduct(ProductId id, name, price) -> 
-            getState id >>= createProduct id name price
+            getProduct deps id >>= createProduct id name price
