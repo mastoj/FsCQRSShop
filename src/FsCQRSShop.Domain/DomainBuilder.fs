@@ -6,5 +6,5 @@ module DomainBuilder =
     open Railway
     open CommandHandling
 
-    let buildDomainEntry save (deps:Dependencies) c = 
+    let buildDomainEntry save deps c = 
         (handle deps c) >>= save

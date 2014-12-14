@@ -16,8 +16,8 @@ module Test =
     open CommandHandling
     open DomainBuilder
 
-    let toStreamId (id:Guid) = sprintf "Test-%O" id
     let doStuff = 
+        let toStreamId (id:Guid) = sprintf "Test-%O" id
         let es = connect()
         let appendStream = appendToStream es
         let readStream id = readFromStream es (toStreamId id)
@@ -30,16 +30,12 @@ module Test =
         let id = Guid.NewGuid()
         let command = Command.CustomerCommand(CreateCustomer(CustomerId(id), "Tomas Jansson"))
         let command2 = Command.CustomerCommand(MarkCustomerAsPreferred(CustomerId(id), 80))
-        let saveEvents = handle command
-        let saveEvents = handle command2
+        let savedEvents = handle command
+        let savedEvents2 = handle command2
         let (version, events) = readStream id
 
         let serialized = JsonConvert.SerializeObject(events)
         printfn "serialized: %s" serialized
-
-        let deserialized = JsonConvert.DeserializeObject<Event list>(serialized)
-        printfn "deserialized: %A" deserialized
-        printfn "deserialized: %O" deserialized
 
 open Test
 [<EntryPoint>]

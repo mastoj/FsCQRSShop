@@ -12,14 +12,14 @@ open FsCQRSShop.Domain.Railway
 open FsCQRSShop.Infrastructure.EventStore.DummyEventStore
 
 let createTestApplication dependencies events = 
-    let es = create()
-    let toStreamId (id:Guid) = sprintf "%O" id
-    let readStream id = readFromStream es (toStreamId id)
-    events |> List.map (fun (id, evts) -> appendToStream es (toStreamId id) -1 evts) |> ignore
-    let deps = {readEvents = readStream}
+        let es = create()
+        let toStreamId (id:Guid) = sprintf "%O" id
+        let readStream id = readFromStream es (toStreamId id)
+        events |> List.map (fun (id, evts) -> appendToStream es (toStreamId id) -1 evts) |> ignore
+        let deps = {readEvents = readStream}
 
-    let save res = Success res
-    buildDomainEntry save deps
+        let save res = Success res
+        buildDomainEntry save deps
 
 let Given (events, dependencies) = events, dependencies
 let When command (events, dependencies) = events, dependencies, command

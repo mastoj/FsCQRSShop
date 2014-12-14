@@ -46,7 +46,7 @@ module Customer =
 
     let getCustomerState deps id = evolveCustomer Init ((deps.readEvents id) |> (fun (_, e) -> e))
 
-    let handleCustomer deps pc =
+    let handleCustomer deps cc =
         let createCustomer id name (version, state) =
             match state with
             | Init -> Success (id, version, [CustomerCreated(CustomerId id, name)])
@@ -56,7 +56,7 @@ module Customer =
             | Init -> Failure (InvalidState "Customer")
             | _ -> Success (id, version, [CustomerMarkedAsPreferred(CustomerId id, discount)])
 
-        match pc with
+        match cc with
         | CreateCustomer(CustomerId id, name) -> 
             getCustomerState deps id >>= (createCustomer id name)
         | MarkCustomerAsPreferred(CustomerId id, discount) -> 

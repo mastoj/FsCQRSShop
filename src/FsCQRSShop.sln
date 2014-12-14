@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.22310.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Tests", "FsCQRSShop.Tests\FsCQRSShop.Tests.fsproj", "{EE99B2BA-6C78-4CFB-A043-D84BD7C50ABA}"
 EndProject
@@ -12,6 +12,10 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.EventStore", "FsCQRSShop.EventStore\FsCQRSShop.EventStore.fsproj", "{B56A2384-57F0-4E38-8A7C-63E583D12817}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Console", "FsCQRSShop.Console\FsCQRSShop.Console.fsproj", "{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FsCQRSShop.WebBootstrap", "FsCQRSShop.WebBootstrap\FsCQRSShop.WebBootstrap.csproj", "{2069878B-F0DB-40FF-9315-A885369634AB}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsCQRSShop.Web", "FsCQRSShop.Web\FsCQRSShop.Web.fsproj", "{645BAB93-77E4-4FA3-A402-5DFE6EAE7917}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{322C6E8F-FE90-45AB-95C7-CAD2F0FA999B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2069878B-F0DB-40FF-9315-A885369634AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2069878B-F0DB-40FF-9315-A885369634AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2069878B-F0DB-40FF-9315-A885369634AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2069878B-F0DB-40FF-9315-A885369634AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{645BAB93-77E4-4FA3-A402-5DFE6EAE7917}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{645BAB93-77E4-4FA3-A402-5DFE6EAE7917}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{645BAB93-77E4-4FA3-A402-5DFE6EAE7917}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{645BAB93-77E4-4FA3-A402-5DFE6EAE7917}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

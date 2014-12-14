@@ -44,7 +44,6 @@
   <ItemGroup>
     <Compile Include="Railway.fs" />
     <Compile Include="Helpers.fs" />
-    <Compile Include="EventHandling.fs" />
     <Compile Include="Customer.fs" />
     <Compile Include="Basket.fs" />
     <Compile Include="Product.fs" />

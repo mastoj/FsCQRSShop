@@ -8,7 +8,6 @@ open Basket
 open Order
 open Product
 open Helpers
-open FsCQRSShop.Domain.EventHandling
 
 module CommandHandling =
     let handle deps c =
