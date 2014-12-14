@@ -84,3 +84,22 @@ module ``When adding an item to the basket`` =
                (productGuid, [ProductCreated(productId, productName, productPrice)])], None)
         |> When (Command.BasketCommand(AddItemToBasket(basketId, productId, quantity)))
         |> Expect [ItemAdded(basketId, orderLine)]
+
+module ``When checking out a basket`` = 
+    [<Fact>]
+    let ``the address must be valid (not empty)``() = 
+        let address = "  "
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId basketGuid
+        Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), 0)])], None)
+        |> When (Command.BasketCommand(CheckoutBasket(basketId, {Street = address})))
+        |> ExpectFail (ValidationError "Invalid address")
+
+    [<Fact>]
+    let ``it should be checked out for valid address``() = 
+        let address = "   some street   "
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId basketGuid
+        Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), 0)])], None)
+        |> When (Command.BasketCommand(CheckoutBasket(basketId, {Street = address})))
+        |> Expect [BasketCheckedOut(basketId, {Street = address.Trim()})]

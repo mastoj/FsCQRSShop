@@ -11,6 +11,7 @@ module Railway =
         | InvalidStateTransition of string
         | NotSupportedCommand of string
         | UnknownDto of string
+        | ValidationError of string
 
     type Result<'T> =
         | Success of 'T

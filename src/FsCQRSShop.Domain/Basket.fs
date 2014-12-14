@@ -44,6 +44,11 @@ module Basket =
                                             Success (basketId, version, [ItemAdded(BasketId basketId, orderLine)])
                                          | _ -> Failure (InvalidState "Product"))
 
+        let checkout id address (version, basket) =
+            match basket with
+            | Init -> Failure (InvalidState "Basket")
+            | Created b -> Success (id, version, [BasketCheckedOut(b.Id, address)])
+
         match pc with
         | CreateBasket(BasketId id, CustomerId customerId) ->
             let discountResult = getCustomerState deps customerId
@@ -54,5 +59,7 @@ module Basket =
         | AddItemToBasket(BasketId basketId, ProductId productId, quantity) ->
             getState basketId
             >>= addItem basketId productId quantity
+        | CheckoutBasket(BasketId id, address) ->
+            getState id >>= checkout id address
 
         | _ -> Failure (NotSupportedCommand (pc.GetType().Name))
