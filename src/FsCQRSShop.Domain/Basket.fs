@@ -50,13 +50,21 @@ module Basket =
             match basket with
             | Init -> Failure (InvalidState "Basket")
             | Created (b,_) -> Success (id, version, [BasketCheckedOut(b.Id, address)])
-
+        
+        let rec calculateOrderTotal lines total =
+            match lines with
+            | [] -> total
+            | x::xs -> calculateOrderTotal xs (total + x.DiscountedPrice * x.Quantity)
+    
         let makePayment id payment (version, basket) =
             match basket with
             | Created(b,lines) -> 
                 let orderGuid = deps.guidGenerator()
                 let orderId = OrderId orderGuid
-                Success (orderGuid, -1, [OrderCreated(orderId, b.Id, lines)])
+                let orderTotal = calculateOrderTotal lines 0
+                match orderTotal - payment with
+                | 0 -> Success (orderGuid, -1, [OrderCreated(orderId, b.Id, lines)])
+                | _ -> Failure InvalidPaymentAmount
 
         match pc with
         | CreateBasket(BasketId id, CustomerId customerId) ->

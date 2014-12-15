@@ -126,3 +126,16 @@ module ``When making a payment`` =
               Some {defaultDependencies with guidGenerator = (fun() -> orderGuid)})
         |> When (Command.BasketCommand(MakePayment(basketId, 1000)))
         |> Expect [OrderCreated(orderId, basketId, [orderLine])]
+
+    [<Fact>]
+    let ``the payment should not succeed if the paid amount is not the same as the expected``() =
+        let basketGuid = Guid.NewGuid()
+        let basketId = BasketId basketGuid
+        let orderGuid = Guid.NewGuid()
+        let orderId = OrderId orderGuid
+        let orderLine = {ProductId = ProductId(Guid.NewGuid()); ProductName = "Ball"; OriginalPrice = 100; DiscountedPrice = 100; Quantity = 10}
+
+        Given([(basketGuid, [BasketCreated(basketId, CustomerId(Guid.NewGuid()), 0); ItemAdded(basketId, orderLine)])], 
+              Some {defaultDependencies with guidGenerator = (fun() -> orderGuid)})
+        |> When (Command.BasketCommand(MakePayment(basketId, 1001)))
+        |> ExpectFail InvalidPaymentAmount

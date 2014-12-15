@@ -12,6 +12,7 @@ module Railway =
         | NotSupportedCommand of string
         | UnknownDto of string
         | ValidationError of string
+        | InvalidPaymentAmount
 
     type Result<'T> =
         | Success of 'T
