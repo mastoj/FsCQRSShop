@@ -53,6 +53,7 @@
     <Compile Include="CustomerTests.fs" />
     <Compile Include="ProductTests.fs" />
     <Compile Include="BasketTests.fs" />
+    <Compile Include="OrderTests.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
   </ItemGroup>

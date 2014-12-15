@@ -63,7 +63,9 @@ module Basket =
                 let orderId = OrderId orderGuid
                 let orderTotal = calculateOrderTotal lines 0
                 match orderTotal - payment with
-                | 0 -> Success (orderGuid, -1, [OrderCreated(orderId, b.Id, lines)])
+                | 0 -> 
+                    let events = if orderTotal > 100000 then [NeedsApproval(orderId)] else [OrderApproved(orderId)]
+                    Success (orderGuid, -1, (OrderCreated(orderId, b.Id, lines)::events))
                 | _ -> Failure InvalidPaymentAmount
 
         match pc with
