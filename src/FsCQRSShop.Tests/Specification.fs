@@ -19,8 +19,8 @@ let createTestApplication dependencies events =
         let readStream id = readFromStream es (toStreamId id)
         events |> List.map (fun (id, evts) -> appendToStream es (toStreamId id) -1 evts) |> ignore
         let deps = match dependencies with
-                   | None -> { defaultDependencies with readEvents = readStream}
-                   | Some d -> { d with readEvents = readStream }
+                    | None -> { defaultDependencies with readEvents = readStream}
+                    | Some d -> { d with readEvents = readStream }
 
         let save res = Success res
         buildDomainEntry save deps
