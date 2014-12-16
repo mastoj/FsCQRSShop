@@ -15,8 +15,7 @@ module Basket =
     | Init
     | Created of BasketInfo * OrderLine list
 
-    let evolveOneBasket state event = 
-        match event with
+    let evolveOneBasket state = function
         | BasketCreated(basketId, customerId, discount) -> Success (Created ({Id = basketId; Discount = discount},[]))
         | ItemAdded(basketId, orderLine) -> match state with
                                             | Created (info, lines) -> Success (Created(info, orderLine::lines))
