@@ -18,9 +18,8 @@ module Railway =
         | Success of 'T
         | Failure of Error
 
-    let bind switchFunction = 
-        fun input -> match input with
-                        | Success s -> switchFunction s
-                        | Failure s -> Failure s
-
+    let bind switchFunction = function
+        | Success s -> switchFunction s
+        | Failure f -> Failure f
+   
     let (>>=) input switchFunction = bind switchFunction input

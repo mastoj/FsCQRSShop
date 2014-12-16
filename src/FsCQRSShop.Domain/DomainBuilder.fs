@@ -9,13 +9,12 @@ module DomainBuilder =
     open CommandHandling
 
 
-    let validateCommand c = 
-        match c with
+    let validateCommand = function
         | Command.BasketCommand(CheckoutBasket(id, addr)) -> 
             match addr.Street.Trim() with
             | "" -> Failure (ValidationError "Invalid address")
             | trimmed -> Success (BasketCommand(CheckoutBasket(id, {addr with Street = trimmed})))
-        | _ -> Success c
+        | c -> Success c
 
     let buildDomainEntry save deps c = 
         (validateCommand c) >>= (handle deps) >>= save

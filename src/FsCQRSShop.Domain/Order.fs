@@ -14,8 +14,7 @@ module Order =
     | Cancelled of OrderId
     | ShippingStarted of OrderId
 
-    let evolveOneOrder state event = 
-        match event with
+    let evolveOneOrder state = function
         | OrderCreated (id, basketId, lines) -> Success (Created(id))
         | OrderCancelled (id) -> Success (Cancelled(id))
         | ShippingProcessStarted (id) -> Success (ShippingStarted(id))
@@ -29,20 +28,20 @@ module Order =
 
         match pc with
         | StartShippingProcess (OrderId id) -> 
-            handleCommand id (fun (v, s) -> 
-                                match s with
-                                | Cancelled _ -> Failure (InvalidState "Order")
-                                | _ -> Success (id, v, [ShippingProcessStarted(OrderId id)]))
+            handleCommand id <| fun (v, s) -> 
+                match s with
+                | Cancelled _ -> Failure (InvalidState "Order")
+                | _ -> Success (id, v, [ShippingProcessStarted(OrderId id)])
         | CancelOrder (OrderId id) -> 
-            handleCommand id (fun (v, s) -> 
-                                match s with
-                                | ShippingStarted _ -> Failure (InvalidState "Order")
-                                | _ -> Success (id, v, [OrderCancelled(OrderId id)]))
+            handleCommand id <| fun (v, s) -> 
+                match s with
+                | ShippingStarted _ -> Failure (InvalidState "Order")
+                | _ -> Success (id, v, [OrderCancelled(OrderId id)])
         | ShipOrder (OrderId id) ->
-            handleCommand id (fun (v,s) -> 
-                                match s with
-                                | ShippingStarted _ -> Success (id, v, [OrderShipped(OrderId id)])
-                                | _ -> Failure (InvalidState "Order"))
+            handleCommand id <| fun (v,s) -> 
+                match s with
+                | ShippingStarted _ -> Success (id, v, [OrderShipped(OrderId id)])
+                | _ -> Failure (InvalidState "Order")
         | ApproveOrder (OrderId id) ->
             handleCommand id (fun (v,s) -> Success (id, v, [OrderApproved(OrderId id)]))
         | _ -> Failure (NotSupportedCommand (pc.GetType().Name))

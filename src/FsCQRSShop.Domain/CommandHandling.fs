@@ -10,9 +10,8 @@ open Product
 open Helpers
 
 module CommandHandling =
-    let handle deps c =
-        match c with
-        | Command.CustomerCommand(cc) -> handleCustomer deps cc
-        | Command.BasketCommand(bc) -> handleBasket deps bc
-        | Command.OrderCommand(oc) -> handleOrder deps oc
-        | Command.ProductCommand(pc) -> handleProduct deps pc
+    let handle deps = function
+    | Command.CustomerCommand(cc) -> handleCustomer deps cc
+    | Command.BasketCommand(bc) -> handleBasket deps bc
+    | Command.OrderCommand(oc) -> handleOrder deps oc
+    | Command.ProductCommand(pc) -> handleProduct deps pc

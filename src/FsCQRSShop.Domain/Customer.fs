@@ -18,14 +18,12 @@ module Customer =
 
     let invalidCustomerState = Failure (InvalidState "Customer")
     
-    let getDiscount c = 
-        match c with
+    let getDiscount = function
         | Preferred (_, d) -> Success d
         | Created _ -> Success 0
         | Init -> invalidCustomerState
 
-    let getCustomerId c =
-        match c with
+    let getCustomerId = function
         | Preferred (info, _) -> Success info.Id
         | Created info -> Success info.Id
         | Init -> invalidCustomerState
