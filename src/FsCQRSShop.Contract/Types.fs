@@ -9,5 +9,5 @@ type OrderId = OrderId of Guid
 type Address = { Street: string }
 
 type OrderLine = {ProductId: ProductId; ProductName: string; OriginalPrice: int; DiscountedPrice: int; Quantity: int}
-    with override this.ToString() = sprintf "ProdcutName: %s, Price: %d, Discounted: %d, Quantity: %d" this.ProductName this.OriginalPrice this.DiscountedPrice this.Quantity
+    with override this.ToString() = sprintf "ProductName: %s, Price: %d, Discounted: %d, Quantity: %d" this.ProductName this.OriginalPrice this.DiscountedPrice this.Quantity
 
