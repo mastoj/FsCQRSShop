@@ -15,14 +15,16 @@ module Basket =
     | Init
     | Created of BasketInfo * OrderLine list
 
-    let evolveOneBasket state = function
-        | BasketCreated(basketId, customerId, discount) -> Success (Created ({Id = basketId; Discount = discount},[]))
-        | ItemAdded(basketId, orderLine) -> match state with
-                                            | Created (info, lines) -> Success (Created(info, orderLine::lines))
+    let evolveOneBasket state event = 
+        match state, event with
+        | Init, BasketCreated(basketId, customerId, discount) -> Success (Created ({Id = basketId; Discount = discount},[]))
+        | Created (info, lines), ItemAdded(basketId, orderLine) ->Success (Created(info, orderLine::lines))
+        | _ -> stateTransitionFail state event
+
     let evolveBasket = evolve evolveOneBasket
 
     let handleBasket deps pc = 
-        let getState id = evolveBasket Init ((deps.readEvents id) |> (fun (_, e) -> e))
+        let getState id = evolveBasket Init ((deps.readEvents id) |> snd)
 
         let createBasket id customerId discountResult (version,state) = 
             match state, discountResult with
@@ -66,6 +68,7 @@ module Basket =
                     let events = if orderTotal > 100000 then [NeedsApproval(orderId)] else [OrderApproved(orderId)]
                     Success (orderGuid, -1, (OrderCreated(orderId, b.Id, lines)::events))
                 | _ -> Failure InvalidPaymentAmount
+            | _ -> Failure (InvalidState "Basket")
 
         match pc with
         | CreateBasket(BasketId id, CustomerId customerId) ->

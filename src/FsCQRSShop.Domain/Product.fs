@@ -15,14 +15,12 @@ module Product =
     | Created of ProductInfo
 
     let evolveOneProduct state event = 
-        match state with
-        | Init -> match event with
-                  | ProductCreated(id, name, price) -> Success (Created {Id = id; Name = name; Price = price})
-                  | _ -> stateTransitionFail state event
+        match state, event with
+        | Init, ProductCreated(id, name, price) -> Success (Created {Id = id; Name = name; Price = price})
         | _ -> stateTransitionFail state event
 
     let evolveProduct = evolve evolveOneProduct
-    let getProduct deps id = evolveProduct Init ((deps.readEvents id) |> (fun (_, e) -> e))
+    let getProduct deps id = evolveProduct Init ((deps.readEvents id) |> snd)
 
     let handleProduct deps pc = 
         let createProduct id name price (version,state) = 

@@ -18,9 +18,10 @@ module Order =
         | OrderCreated (id, basketId, lines) -> Success (Created(id))
         | OrderCancelled (id) -> Success (Cancelled(id))
         | ShippingProcessStarted (id) -> Success (ShippingStarted(id))
+        | e -> stateTransitionFail state e
 
     let evolveOrder = evolve evolveOneOrder
-    let getOrder deps id = evolveOrder Init ((deps.readEvents id) |> (fun (_, e) -> e))
+    let getOrder deps id = evolveOrder Init ((deps.readEvents id) |> snd)
 
     let handleOrder deps pc = 
         let handleCommand id fn =
