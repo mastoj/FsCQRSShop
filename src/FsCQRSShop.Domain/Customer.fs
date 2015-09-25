@@ -29,20 +29,15 @@ module Customer =
         | Init -> invalidCustomerState
 
     let evolveOneCustomer state event =
-        match state with
-        | Init -> match event with
-                  | CustomerCreated(id, name) -> Success ( Created{Id = id; Name = name})
-                  | _ -> stateTransitionFail event state
-        | Created info -> match event with
-                          | CustomerMarkedAsPreferred(id, discount) -> Success (Preferred(info,discount))
-                          | _ -> stateTransitionFail event state
-        | Preferred (info, _) -> match event with
-                                 | CustomerMarkedAsPreferred(id, discount) -> Success (Preferred(info,discount))
-                                 | _ -> stateTransitionFail event state
+        match state, event with
+        | Init, CustomerCreated(id, name) -> Success ( Created{Id = id; Name = name})
+        | Created info, CustomerMarkedAsPreferred(id, discount) -> Success (Preferred(info,discount))
+        | Preferred (info, _), CustomerMarkedAsPreferred(id, discount) -> Success (Preferred(info,discount))
+        | _ -> stateTransitionFail event state
 
     let evolveCustomer = evolve evolveOneCustomer
 
-    let getCustomerState deps id = evolveCustomer Init ((deps.readEvents id) |> (fun (_, e) -> e))
+    let getCustomerState deps id = evolveCustomer Init ((deps.readEvents id) |> snd)
 
     let handleCustomer deps cc =
         let createCustomer id name (version, state) =
